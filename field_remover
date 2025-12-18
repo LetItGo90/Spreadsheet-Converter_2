@@ -1,0 +1,24 @@
+$excel = New-Object -ComObject Excel.Application
+$excel.Visible = $false
+$excel.DisplayAlerts = $false
+
+Get-ChildItem -Filter "*.xlsx" | ForEach-Object {
+    $workbook = $excel.Workbooks.Open($_.FullName)
+    $sheet = $workbook.Sheets.Item(1)
+    
+    # Find and delete ID and CASE_RK columns (go backwards so column numbers don't shift)
+    $lastCol = $sheet.UsedRange.Columns.Count
+    for ($col = $lastCol; $col -ge 1; $col--) {
+        $header = $sheet.Cells.Item(1, $col).Text
+        if ($header -eq "ID" -or $header -eq "CASE_RK") {
+            $sheet.Columns.Item($col).Delete() | Out-Null
+        }
+    }
+    
+    $workbook.Save()
+    $workbook.Close()
+}
+
+$excel.Quit()
+
+Write-Host "Done removing columns"
