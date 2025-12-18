@@ -2,12 +2,12 @@ $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $false
 $excel.DisplayAlerts = $false
 
-Get-ChildItem "output_files\*.csv" | ForEach-Object {
+Get-ChildItem "C:\Users\TAQ7510\OneDrive - The Toronto-Dominion Bank\Documents\Spreadsheet\output_files\*.csv" | ForEach-Object {
     $workbook = $excel.Workbooks.Open($_.FullName)
     $xlsxPath = $_.FullName -replace '\.csv$', '.xlsx'
     $workbook.SaveAs($xlsxPath, 51)
     $workbook.Close()
-    Remove-Item $_.FullName  # deletes the csv after converting
+    Remove-Item $_.FullName
 }
 
 $excel.Quit()
