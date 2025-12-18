@@ -1,0 +1,15 @@
+$excel = New-Object -ComObject Excel.Application
+$excel.Visible = $false
+$excel.DisplayAlerts = $false
+
+Get-ChildItem "output_files\*.csv" | ForEach-Object {
+    $workbook = $excel.Workbooks.Open($_.FullName)
+    $xlsxPath = $_.FullName -replace '\.csv$', '.xlsx'
+    $workbook.SaveAs($xlsxPath, 51)
+    $workbook.Close()
+    Remove-Item $_.FullName  # deletes the csv after converting
+}
+
+$excel.Quit()
+
+Write-Host "Done converting to xlsx"
